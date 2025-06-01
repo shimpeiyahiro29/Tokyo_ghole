@@ -56,25 +56,30 @@ def lot_special(hatuatari,densapo):#ラッシュ時の抽選　引数：(確率,
 #4,単発の場合、6000円をプラスして終わり
 #5,ラッシュの場合、ラッシュのスペックで外れるまで続ける。引数は当選確率とラッシュ数
 #ラッシュ中は３%で6,000発の当たりを含める。
-hit_num,hit_inves=inves_money(399,18)#初当たり回数と投資額を算出
-lot_mode = random.randint(1,100)
-if lot_mode <50:#49%で単発
-    total_scoles =1200-hit_inves#1/2で出球300のチャージ当たりから投資額を引く
-    supabase.table("ghole").insert({"hit_count":hit_num}).execute()
-    print("😡チャージ 初当たり:"f"{hit_num}""　/結果:"f"{total_scoles}""円")
-         
-else:#51%でラッシュ
-    lot_charge = random.randint(1,2)
-    if lot_charge <2:#1/2で単発のモードをとる。
-        total_scoles = 6000-hit_inves#1/2で出球1500発から投資額をひく
-        supabase.table("ghole").insert({"hit_count":hit_num}).execute()
-        print("☠️単発 初当たり:"f"{hit_num}""　/結果:"f"{total_scoles}""円") 
 
-    else:
-        rush_num,special_num,rush_resrt=lot_special(95,130)#ラッシュ回数と出球を算出
-        total_scoles =4*rush_resrt-hit_inves#出球から投資額をひく
+def simulate_lot():
+    hit_num,hit_inves=inves_money(399,18)#初当たり回数と投資額を算出
+    lot_mode = random.randint(1,100)
+    if lot_mode <50:#49%で単発
+        total_scoles =1200-hit_inves#1/2で出球300のチャージ当たりから投資額を引く
         supabase.table("ghole").insert({"hit_count":hit_num}).execute()
-        print("🎉ラッシュ突入！🎉 初当たり:"f"{hit_num}""　/ラッシュ回数:"f"{rush_num}""　/6000ラッシュ回数:"f"{special_num}""　/結果"f"{total_scoles}""円")
+        print("😡チャージ 初当たり:"f"{hit_num}""　/結果:"f"{total_scoles}""円")
+            
+    else:#51%でラッシュ
+        lot_charge = random.randint(1,2)
+        if lot_charge <2:#1/2で単発のモードをとる。
+            total_scoles = 6000-hit_inves#1/2で出球1500発から投資額をひく
+            supabase.table("ghole").insert({"hit_count":hit_num}).execute()
+            print("☠️単発 初当たり:"f"{hit_num}""　/結果:"f"{total_scoles}""円") 
+
+        else:
+            rush_num,special_num,rush_resrt=lot_special(95,130)#ラッシュ回数と出球を算出
+            total_scoles =4*rush_resrt-hit_inves#出球から投資額をひく
+            supabase.table("ghole").insert({"hit_count":hit_num}).execute()
+            print("🎉ラッシュ突入！🎉 初当たり:"f"{hit_num}""　/ラッシュ回数:"f"{rush_num}""　/6000ラッシュ回数:"f"{special_num}""　/結果"f"{total_scoles}""円")
+    return
+
+simulate_lot()
 
         
 
