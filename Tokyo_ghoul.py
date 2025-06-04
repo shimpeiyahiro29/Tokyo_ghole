@@ -3,9 +3,6 @@ import random
 import math
 from supabase import create_client, Client
 
-# --- Supabase の設定 ---
-# 環境変数から取得することを推奨します。
-# secrets.toml を使う場合は st.secrets を使います。
 url: str = "https://pszefvosagdpzilocerq.supabase.co"
 key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzemVmdm9zYWdkcHppbG9jZXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4ODU1NTIsImV4cCI6MjA2MDQ2MTU1Mn0.nRw_Ev8VGVf_PvnQZ5Lk10JPYg3jaJwUWkGCmNO03fA"
 
@@ -53,8 +50,8 @@ def lot_special(hatuatari, densapo):
     return hit_attemps, special_attemps, scoles
 
 # --- Streamlit アプリケーションのUIとロジック ---
-st.set_page_config(page_title="パチンコシミュレーター", layout="centered")
-st.title("🎰 パチンコシミュレーション")
+st.set_page_config(page_title="パチンコシミュレーター touky", layout="centered")
+st.title("🎰 E-東京グールシミュレーター")
 
 st.write("ボタンを押すと1回分のパチンコシミュレーションを実行し、結果を表示します。")
 st.write("シミュレーション結果はSupabaseデータベースに記録されます。")
