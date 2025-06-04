@@ -1,0 +1,4 @@
+supabase
+streamlit
+openai==1.64.0
+python-dotenv
