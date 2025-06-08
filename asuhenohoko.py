@@ -87,7 +87,7 @@ if st.button("シミュレーションを実行！"):
         }
         if result_type == "ラッシュ":
             data_to_insert["rush_count"] = rush_info["rush_count"]
-            # data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"]
+            data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"]
 
         response = supabase.table("ghole").insert(data_to_insert).execute()
         # st.success("結果をSupabaseに保存しました！") # デバッグ用
@@ -104,6 +104,6 @@ if st.button("シミュレーションを実行！"):
 
     if result_type == "ラッシュ":
         st.write(f"  - **ラッシュ回数**: {rush_info['rush_count']}回")
-        # st.write(f"  - ラッシュ中獲得点数/玉数: {rush_info['raw_rush_score']}") # 必要であれば表示
+        st.write(f"  - ラッシュ中獲得点数/玉数: {rush_info['raw_rush_score']}") 
 
     st.info("別のシミュレーションを実行するには、再度ボタンを押してください。")
