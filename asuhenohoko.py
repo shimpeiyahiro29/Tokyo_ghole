@@ -64,8 +64,18 @@ if st.button("シミュレーションを実行！"):
 
     lot_mode = random.randint(1, 100)
     if lot_mode <= 50: # 50%で当たり
-        total_scoles = 1800 - hit_inves
-        result_type = "単発"
+        chance_num,chance_inves = inves_money(319, revolutions_per_1000yen)
+        if chance_num < 100:
+            rush_num, special_num, rush_raw_score = lot_special(99, 163)
+            total_scoles = (rush_raw_score * 4)+7800 - hit_inves -chance_inves
+            result_type = "単発引き戻し"
+            rush_info = {
+                "rush_count": special_num,
+                "raw_rush_score": rush_raw_score # 点数または玉数
+        }
+        else:
+            total_scoles = 1800 - hit_inves
+            result_type = "単発"
     else: # 50%でラッシュ分岐
         # ラッシュ突入
         rush_num, special_num, rush_raw_score = lot_special(99, 163)
