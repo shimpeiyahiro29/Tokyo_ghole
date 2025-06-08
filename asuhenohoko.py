@@ -72,7 +72,7 @@ if st.button("シミュレーションを実行！"):
         total_scoles = (rush_raw_score * 4)+1800 - hit_inves
         result_type = "ラッシュ"
         rush_info = {
-            "rush_count": rush_num,
+            "rush_count": special_num,
             "raw_rush_score": rush_raw_score # 点数または玉数
         }
             
