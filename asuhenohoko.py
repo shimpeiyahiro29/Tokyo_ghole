@@ -95,7 +95,7 @@ if st.button("シミュレーションを実行！"):
             "total_score": total_scoles,
             "initial_investment": hit_inves # 投資額も保存
         }
-        if result_type == "ラッシュ"or"単発引き戻し":
+        if result_type == "ラッシュ":
             data_to_insert["rush_count"] = rush_info["rush_count"]
             #data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"]
 
@@ -112,7 +112,7 @@ if st.button("シミュレーションを実行！"):
     st.write(f"**結果タイプ**: {result_type}")
     st.write(f"**最終収支**: {total_scoles}円")
 
-    if result_type == "ラッシュ"or"単発引き戻し":
+    if result_type == "ラッシュ":
         st.write(f"  - **ラッシュ回数**: {rush_info['rush_count']}回")
         st.write(f"  - ラッシュ中獲得点数/玉数: {rush_info['raw_rush_score']}") 
 
