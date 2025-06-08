@@ -87,7 +87,7 @@ if st.button("シミュレーションを実行！"):
         }
         if result_type == "ラッシュ":
             data_to_insert["rush_count"] = rush_info["rush_count"]
-            data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"]
+            #data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"]
 
         response = supabase.table("ghole").insert(data_to_insert).execute()
         # st.success("結果をSupabaseに保存しました！") # デバッグ用
