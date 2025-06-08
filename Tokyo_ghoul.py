@@ -94,7 +94,7 @@ if st.button("シミュレーションを実行！"):
             # ここでは、元のコードの scoles += 1500 が 1500発、scoles += 3000 が 3000発の誤記だと仮定して、
             # scoles を「得点」ではなく「出玉」として計算されたものと解釈し、単純に4をかけます。
             # もし scoles が「点数」であり、1点あたりの価値がある場合は、ここを調整してください。
-            total_scoles = (rush_raw_score * 4) - hit_inves
+            total_scoles = (rush_raw_score * 4)+6000 - hit_inves
             result_type = "ラッシュ"
             rush_info = {
                 "rush_count": rush_num,
