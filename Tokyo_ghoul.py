@@ -58,15 +58,12 @@ st.write("シミュレーション結果はSupabaseデータベースに記録�
 
 # ユーザーが設定できるパラメータ
 st.sidebar.header("シミュレーション設定")
-initial_prob = st.sidebar.slider("初当たり確率 (1/)", 10, 500, 199, step=1)
 revolutions_per_1000yen = st.sidebar.slider("1000円あたりの回転数", 10, 30, 18, step=1)
-rush_prob = st.sidebar.slider("ラッシュ中確率 (1/)", 10, 200, 95, step=1)
-densapo_count = st.sidebar.slider("電サポ回数", 50, 200, 130, step=5)
 
 
 if st.button("シミュレーションを実行！"):
     # シミュレーションの実行
-    hit_num, hit_inves = inves_money(initial_prob, revolutions_per_1000yen)
+    hit_num, hit_inves = inves_money(199, revolutions_per_1000yen)
     total_scoles = 0
     result_type = ""
     rush_info = {}
@@ -81,7 +78,7 @@ if st.button("シミュレーションを実行！"):
             total_scoles = 6000 - hit_inves
             result_type = "単発"
         else: # ラッシュ突入
-            rush_num, special_num, rush_raw_score = lot_special(rush_prob, densapo_count)
+            rush_num, special_num, rush_raw_score = lot_special(95, 134)
             # 出玉を円に換算（例: 1玉4円と仮定）
             # もし rush_raw_score が玉数ではなく点数なら、適切な換算が必要です。
             # 元のコードの 4*rush_resrt-hit_inves は、rush_resrt が玉数で、1玉4円という計算式に見えます。
