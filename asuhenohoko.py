@@ -89,7 +89,7 @@ if st.button("シミュレーションを実行！"):
             data_to_insert["rush_count"] = rush_info["rush_count"]
             #data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"]
 
-        response = supabase.table("ghole").insert(data_to_insert).execute()
+        response = supabase.table("eva").insert(data_to_insert).execute()
         # st.success("結果をSupabaseに保存しました！") # デバッグ用
         # print(response) # デバッグ用
     except Exception as e:
