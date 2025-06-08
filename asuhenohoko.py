@@ -73,7 +73,6 @@ if st.button("シミュレーションを実行！"):
         result_type = "ラッシュ"
         rush_info = {
             "rush_count": rush_num,
-            "special_rush_count": special_num,
             "raw_rush_score": rush_raw_score # 点数または玉数
         }
             
@@ -88,8 +87,6 @@ if st.button("シミュレーションを実行！"):
         }
         if result_type == "ラッシュ":
             data_to_insert["rush_count"] = rush_info["rush_count"]
-            data_to_insert["special_rush_count"] = rush_info["special_rush_count"]
-            # raw_rush_score は Supabase に直接保存しないかもしれません
             # data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"]
 
         response = supabase.table("ghole").insert(data_to_insert).execute()
