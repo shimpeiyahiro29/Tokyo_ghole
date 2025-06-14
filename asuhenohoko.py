@@ -112,7 +112,10 @@ if st.button("シミュレーションを実行！"):
     st.write(f"**結果タイプ**: {result_type}")
     st.write(f"**最終収支**: {total_scoles}円")
 
-    if result_type == "ラッシュ" or "引き戻し":
+    if result_type == "ラッシュ":
+        st.write(f"  - **ラッシュ回数**: {rush_info['rush_count']}回")
+        st.write(f"  - ラッシュ中獲得点数/玉数: {rush_info['raw_rush_score']}") 
+    elif result_type == "引き戻し":
         st.write(f"  - **ラッシュ回数**: {rush_info['rush_count']}回")
         st.write(f"  - ラッシュ中獲得点数/玉数: {rush_info['raw_rush_score']}") 
 
