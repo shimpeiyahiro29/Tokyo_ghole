@@ -3,101 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>パチンコシミュレーター eva</title>
+    <title>🎰 殲滅せよ、未来へ咆哮 - パチンコシミュレーター</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for game-like typography -->
+    <!-- Press Start 2P for retro pixel/title, Orbitron for techy digital, Oxanium for sharper text -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700&family=Oxanium:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tone.js for sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     <style>
-        /* Interフォントを適用 */
+        /* Base font for general text */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Oxanium', sans-serif;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle text shadow for readability */
         }
-        /* スライダーの見た目を調整 (任意) */
+        /* Special font for titles */
+        h1, h2 {
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 30px rgba(0, 255, 0, 0.6); /* NERV-like green glow */
+        }
+        /* Custom slider styles for game theme */
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
-            height: 8px;
-            background: #d3d3d3;
+            height: 14px;
+            background: linear-gradient(to right, #6D28D9, #8B5CF6); /* Purple gradient */
             outline: none;
-            opacity: 0.7;
+            opacity: 0.9;
             -webkit-transition: .2s;
             transition: opacity .2s;
-            border-radius: 4px;
+            border-radius: 7px;
+            border: 2px solid #3B0764; /* Dark purple border */
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.7);
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #4A90E2;
+            width: 28px;
+            height: 28px;
+            background: #FACC15; /* Amber */
             cursor: pointer;
             border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 4px solid #7E22CE; /* Bright purple border */
+            box-shadow: 0 0 12px #FACC15, 0 0 20px #FACC15; /* Strong glow */
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
-        input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #4A90E2;
-            cursor: pointer;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #FFF;
+            box-shadow: 0 0 20px #FFF, 0 0 30px #FFF;
+        }
+
+        /* Button press animation */
+        .btn-game:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(0,0,0,0.6);
+            border-bottom-width: 0;
+        }
+        .btn-game {
+            transition: all 0.2s ease-out;
+        }
+
+        /* Result numbers style */
+        .result-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem; /* Large size for impact */
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 255, 0, 0.8), 0 0 30px rgba(255, 255, 0, 0.6); /* Yellow glow */
+            color: #FFFF00; /* Bright yellow for numbers */
+        }
+        /* Scoreboard look */
+        .scoreboard {
+            background: linear-gradient(to bottom, #171717, #0A0A0A); /* Very dark, almost black */
+            border: 3px solid #6D28D9; /* Darker purple border */
+            box-shadow: 0 0 25px rgba(109, 40, 217, 0.7); /* Purple glow */
+        }
+        .info-panel {
+            background: #262626; /* Dark gray for info panels */
+            border: 1px solid #4A0E69; /* Darker purple border */
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.6);
+            color: #E0E0E0; /* Light gray text */
+        }
+        /* NERV-like red warning for error */
+        .error-panel {
+            background: linear-gradient(to right, #B91C1C, #991B1B);
+            border: 3px solid #EF4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+            color: #FEE2E2;
+        }
+        .error-panel p {
+            font-family: 'Oxanium', sans-serif;
+        }
+        /* Glitch effect for title (simple version) */
+        @keyframes glitch {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); transform: translateX(0); }
+            20% { text-shadow: 5px 0 10px rgba(0, 255, 0, 0.8); transform: translateX(-2px); }
+            40% { text-shadow: -5px 0 10px rgba(0, 255, 0, 0.8); transform: translateX(2px); }
+            60% { text-shadow: 3px 0 10px rgba(0, 255, 0, 0.8); transform: translateX(-1px); }
+            80% { text-shadow: -3px 0 10px rgba(0, 255, 0, 0.8); transform: translateX(1px); }
+            100% { text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); transform: translateX(0); }
+        }
+        .glitch-text:hover {
+            animation: glitch 0.5s infinite linear;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-purple-700 to-blue-900 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-black to-zinc-950 min-h-screen flex items-center justify-center p-4 selection:bg-purple-700 selection:text-white">
 
-    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full transform transition-all duration-300 hover:scale-105">
-        <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6 flex items-center justify-center">
-            <span class="mr-3 text-yellow-500">🎰</span> 未来への咆哮
+    <div class="bg-gradient-to-br from-gray-900 to-black p-8 rounded-3xl border-4 border-purple-700 shadow-2xl shadow-purple-950 max-w-2xl w-full transform transition-all duration-300 hover:scale-[1.01] relative overflow-hidden">
+        <!-- Decorative NERV-like corner lines -->
+        <div class="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-lime-500 rounded-tl-lg transform -translate-x-2 -translate-y-2"></div>
+        <div class="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-lime-500 rounded-tr-lg transform translate-x-2 -translate-y-2"></div>
+        <div class="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-lime-500 rounded-bl-lg transform -translate-x-2 translate-y-2"></div>
+        <div class="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-lime-500 rounded-br-lg transform translate-x-2 translate-y-2"></div>
+
+        <h1 class="text-5xl md:text-6xl font-extrabold text-center text-lime-400 mb-8 flex items-center justify-center glitch-text">
+            <span class="mr-4 text-orange-500">EVA</span> 未来への咆哮
         </h1>
 
-        <p class="text-center text-gray-600 mb-8">
-            ボタンを押すと1回分のパチンコシミュレーションを実行し、結果を表示します。
-            シミュレーション結果はSupabaseデータベースに記録されます。
+        <p class="text-center text-gray-300 mb-8 text-lg px-4 font-['Oxanium']">
+            ターゲットを捕捉。解析を開始します。<br>
+            作戦開始ボタンを押下し、シミュレートを承認してください。
         </p>
 
-        <div class="mb-8 p-4 bg-gray-50 rounded-lg">
-            <label for="revolutions" class="block text-lg font-semibold text-gray-700 mb-2">
-                1000円あたりの回転数: <span id="revolutionsValue" class="text-blue-600 font-bold">18</span>回
+        <div class="mb-10 p-6 bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-inner border border-gray-700">
+            <label for="revolutions" class="block text-xl font-bold text-sky-400 mb-4 text-center font-['Orbitron']">
+                <span class="text-fuchsia-500 mr-2">>>></span>1000円あたりの回転数<span class="text-fuchsia-500 ml-2"><<<</span>
             </label>
             <input type="range" id="revolutions" min="10" max="30" value="18" step="1"
-                   class="w-full h-2 rounded-lg appearance-none cursor-pointer accent-blue-600 bg-gray-200">
+                   class="w-full">
+            <div class="text-center mt-4">
+                <span id="revolutionsValue" class="text-yellow-300 text-3xl font-bold font-['Orbitron'] drop-shadow-[0_0_8px_rgba(255,255,0,0.8)]">18</span>
+                <span class="text-gray-300 text-xl ml-2 font-['Oxanium']">回 (SET)</span>
+            </div>
         </div>
 
         <button id="simulateButton"
-                class="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 transform hover:scale-105">
-            シミュレーションを実行！
+                class="btn-game w-full bg-gradient-to-br from-lime-500 to-emerald-600 text-white font-bold py-5 px-8 rounded-xl shadow-[0_8px_0_0_#1e3a8a] hover:from-lime-600 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-lime-400 transition-all duration-200 transform">
+            <span class="text-2xl font-['Press Start 2P']">作戦開始</span>
         </button>
 
-        <div id="loadingIndicator" class="hidden text-center mt-6 text-blue-600 font-semibold">
-            <svg class="animate-spin h-6 w-6 mr-3 inline-block" viewBox="0 0 24 24">
+        <div id="loadingIndicator" class="hidden text-center mt-8 text-sky-400 font-semibold text-xl font-['Orbitron']">
+            <svg class="animate-spin h-8 w-8 mr-4 inline-block text-fuchsia-500" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            シミュレーション実行中...
+            <span class="tracking-widest">シミュレーション実行中...</span>
         </div>
 
-        <div id="resultContainer" class="mt-8 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500 shadow-md hidden">
-            <h2 class="text-2xl font-bold text-blue-800 mb-4">--- シミュレーション結果 ---</h2>
-            <p class="text-gray-700 mb-2"><strong>初当たりまでの回転数</strong>: <span id="hitNum" class="font-semibold text-indigo-700"></span>回</p>
-            <p class="text-gray-700 mb-2"><strong>初期投資額</strong>: <span id="initialInvestment" class="font-semibold text-indigo-700"></span>円</p>
-            <p class="text-gray-700 mb-2"><strong>結果タイプ</strong>: <span id="resultType" class="font-semibold text-indigo-700"></span></p>
-            <p class="text-gray-700 mb-4"><strong>最終収支</strong>: <span id="totalScore" class="text-lg font-bold text-green-700"></span>円</p>
+        <div id="resultContainer" class="mt-10 p-8 scoreboard rounded-xl shadow-lg hidden">
+            <h2 class="text-3xl font-bold text-lime-400 mb-6 text-center font-['Press Start 2P']">--- 最終報告 ---</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 text-lg text-gray-300 info-panel p-6 rounded-lg">
+                <div class="flex flex-col items-center"><span class="text-lg text-gray-400">初当たりまで</span><span id="hitNum" class="result-number"></span><span class="text-gray-400">回</span></div>
+                <div class="flex flex-col items-center"><span class="text-lg text-gray-400">初期投資</span><span id="initialInvestment" class="result-number"></span><span class="text-gray-400">円</span></div>
+                <div class="col-span-1 md:col-span-2 flex flex-col items-center"><span class="text-lg text-gray-400">結果タイプ</span><span id="resultType" class="text-3xl font-bold text-fuchsia-500 font-['Orbitron'] drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]"></span></div>
+                <div class="col-span-1 md:col-span-2 flex flex-col items-center"><span class="text-lg text-gray-400">最終収支</span><span id="totalScore" class="result-number text-yellow-400"></span><span class="text-gray-400">円</span></div>
+            </div>
 
-            <div id="rushInfoContainer" class="hidden pl-4 border-l-2 border-gray-300">
-                <p class="text-gray-600 mb-1">- <strong>ラッシュ回数</strong>: <span id="rushCount" class="font-semibold text-purple-700"></span>回</p>
-                <p class="text-gray-600">- ラッシュ中獲得点数/玉数: <span id="rawRushScore" class="font-semibold text-purple-700"></span></p>
+            <div id="rushInfoContainer" class="hidden mt-6 info-panel p-6 rounded-lg">
+                <p class="text-gray-300 mb-3 text-center">- <strong class="text-orange-400">ラッシュ回数</strong>: <span id="rushCount" class="result-number text-orange-400"></span>回</p>
+                <p class="text-gray-300 text-center">- ラッシュ中獲得玉数: <span id="rawRushScore" class="result-number text-orange-400"></span></p>
             </div>
             
-            <p class="text-blue-500 mt-4 text-sm">別のシミュレーションを実行するには、再度ボタンを押してください。</p>
+            <p class="text-center text-blue-300 mt-8 text-md font-['Oxanium']">
+                <span class="mr-2">▶</span>次のシミュレーションを開始します。<span class="ml-2">◀</span>
+            </p>
         </div>
 
-        <div id="errorContainer" class="mt-8 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-lg hidden">
-            <p><strong>エラーが発生しました:</strong> <span id="errorMessage"></span></p>
-            <p class="text-red-600 text-sm mt-2">バックエンドサーバーが実行されているか確認してください。</p>
+        <div id="errorContainer" class="mt-8 p-6 error-panel rounded-lg shadow-md hidden">
+            <p class="font-bold text-xl mb-2 text-red-100 font-['Press Start 2P']">警告！エラー発生！</p>
+            <p class="text-red-200 text-sm font-['Oxanium']"><span id="errorMessage"></span></p>
+            <p class="text-red-300 text-sm mt-4 font-['Oxanium']">システム接続、またはバックエンドサーバーの稼働状態を確認してください。再試行します。</p>
         </div>
     </div>
 
     <script>
+        // Tone.jsのセットアップ (エヴァ感を意識した調整)
+        // Click Sound: 短くシャープなピッチ
+        const clickSynth = new Tone.Synth({
+            oscillator: { type: "square" },
+            envelope: { attack: 0.005, decay: 0.05, sustain: 0.01, release: 0.1 }
+        }).toDestination();
+
+        // Start Sound: 低く重い、起動音のような音
+        const startSynth = new Tone.MembraneSynth({
+            pitchDecay: 0.02,
+            octaves: 5,
+            envelope: {
+                attack: 0.01,
+                decay: 0.8,
+                sustain: 0.05,
+                release: 1.0,
+                attackCurve: "exponential"
+            },
+            volume: -10
+        }).toDestination();
+
+        // Success Sound (ラッシュ/引き戻し): 高く、明るい、勝利や達成感のある音
+        const successSynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.02, decay: 0.4, sustain: 0.2, release: 0.8 },
+            volume: -5
+        }).toDestination();
+
+        // Fail Sound (単発): 低く、短い、残念な感じの音
+        const failSynth = new Tone.MembraneSynth({
+            pitchDecay: 0.08,
+            octaves: 3,
+            envelope: { attack: 0.01, decay: 0.5, sustain: 0.01, release: 0.6 },
+            volume: -10
+        }).toDestination();
+
+        // Error Sound: 警告音のような、不協和音
+        const errorSynth = new Tone.NoiseSynth({
+            noise: { type: "pink" },
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0.0, release: 0.2 },
+            volume: -8
+        }).toDestination();
+
+        function playClickSound() {
+            clickSynth.triggerAttackRelease("G4", "16n");
+        }
+        function playStartSound() {
+            startSynth.triggerAttackRelease("C1", "2n");
+            startSynth.triggerAttackRelease("G1", "2n", "+0.1"); // 少しずらして重ねる
+        }
+        function playSuccessSound() {
+            successSynth.triggerAttackAttackRelease(["C5", "E5", "G5"], "4n");
+            successSynth.triggerAttackAttackRelease(["C6", "E6", "G6"], "4n", "+0.2");
+        }
+        function playFailSound() {
+            failSynth.triggerAttackRelease("F2", "8n");
+            failSynth.triggerAttackRelease("C2", "8n", "+0.1");
+        }
+        function playErrorSound() {
+            errorSynth.triggerAttackRelease("4n");
+            errorSynth.triggerAttackRelease("8n", "+0.1");
+        }
+
         // DOM要素の取得
         const revolutionsSlider = document.getElementById('revolutions');
         const revolutionsValueSpan = document.getElementById('revolutionsValue');
@@ -117,10 +259,14 @@
         // スライダーの値が変更されたときに表示を更新
         revolutionsSlider.addEventListener('input', () => {
             revolutionsValueSpan.textContent = revolutionsSlider.value;
+            // playClickSound(); // スライダー操作時にも音 (今回は少しうるさいのでオフ)
         });
 
         // シミュレーションボタンのクリックイベントリスナー
         simulateButton.addEventListener('click', async () => {
+            playClickSound(); // ボタンクリック音
+            playStartSound(); // シミュレーション開始音
+
             // UIをリセット
             resultContainer.classList.add('hidden');
             errorContainer.classList.add('hidden');
@@ -130,7 +276,8 @@
 
             try {
                 // FlaskバックエンドへのAPIリクエスト
-                const response = await fetch('https://tokyo-ghole.onrender.com/simulate', { 
+                // !!! IMPORTANT: Replace with your actual Render backend URL !!!
+                const response = await fetch('https://tokyo-ghole.onrender.com/simulate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -146,34 +293,66 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // 結果を表示
-                    hitNumSpan.textContent = data.hit_num;
-                    initialInvestmentSpan.textContent = data.initial_investment;
+                    // 数値アニメーションの速度と順番を調整
+                    await animateNumber(hitNumSpan, 0, data.hit_num, 700); // 少し長め
+                    await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
+                    
                     resultTypeSpan.textContent = data.result_type;
-                    totalScoreSpan.textContent = data.total_score;
+                    
+                    // 最終収支は少し遅れて表示し、結果音を鳴らす
+                    await animateNumber(totalScoreSpan, 0, data.total_score, 1000); // 最もインパクトのある数値なので長め
 
                     if (data.result_type === "ラッシュ" || data.result_type === "引き戻し") {
                         rushInfoContainer.classList.remove('hidden');
-                        rushCountSpan.textContent = data.rush_info.rush_count;
-                        rawRushScoreSpan.textContent = data.rush_info.raw_rush_score;
+                        await animateNumber(rushCountSpan, 0, data.rush_info.rush_count, 600);
+                        await animateNumber(rawRushScoreSpan, 0, data.rush_info.raw_rush_score, 600);
+                        playSuccessSound(); // 成功音
                     } else {
                         rushInfoContainer.classList.add('hidden');
+                        playFailSound(); // 失敗音
                     }
 
                     resultContainer.classList.remove('hidden');
                 } else {
                     errorMessageSpan.textContent = data.error || "不明なエラーが発生しました。";
                     errorContainer.classList.remove('hidden');
+                    playErrorSound(); // エラー音
                 }
 
             } catch (error) {
                 console.error("Fetch error:", error);
                 errorMessageSpan.textContent = `ネットワークエラーまたはサーバーエラー: ${error.message}`;
                 errorContainer.classList.remove('hidden');
+                playErrorSound(); // エラー音
             } finally {
                 loadingIndicator.classList.add('hidden'); // ローディングを非表示
             }
         });
+
+        // 数値アニメーション関数 (デジタルカウントアップ風)
+        async function animateNumber(element, start, end, duration) {
+            let startTime = null;
+            const step = (currentTime) => {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value;
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    element.textContent = end; // 最終値を保証
+                }
+            };
+            return new Promise(resolve => requestAnimationFrame(step));
+        }
+
+        // 初期ロード時にTone.jsのコンテキストをアクティブにするためのダミーインタラクション
+        document.body.addEventListener('click', () => {
+            if (Tone.context.state !== 'running') {
+                Tone.context.resume();
+            }
+        }, {once: true});
     </script>
 </body>
 </html>
