@@ -68,7 +68,7 @@ if st.button("シミュレーションを実行！"):
         if chance_num < 100:
             rush_num, special_num, rush_raw_score = lot_special(99, 163)
             total_scoles = (rush_raw_score * 4)+7800 - hit_inves -chance_inves
-            result_type = "単発引き戻し"
+            result_type = "引き戻し"
             rush_info = {
                 "rush_count": special_num,
                 "raw_rush_score": rush_raw_score # 点数または玉数
@@ -112,7 +112,7 @@ if st.button("シミュレーションを実行！"):
     st.write(f"**結果タイプ**: {result_type}")
     st.write(f"**最終収支**: {total_scoles}円")
 
-    if result_type == "ラッシュ" or "単発引き戻し":
+    if result_type == "ラッシュ" or "引き戻し":
         st.write(f"  - **ラッシュ回数**: {rush_info['rush_count']}回")
         st.write(f"  - ラッシュ中獲得点数/玉数: {rush_info['raw_rush_score']}") 
 
