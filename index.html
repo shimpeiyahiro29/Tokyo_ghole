@@ -130,7 +130,7 @@
 
             try {
                 // FlaskバックエンドへのAPIリクエスト
-                const response = await fetch('http://127.0.0.1:5000/simulate', { // FlaskサーバーのURLとポート
+                const response = await fetch('https://tokyo-ghole.onrender.com/simulate', { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
