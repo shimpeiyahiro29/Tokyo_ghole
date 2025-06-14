@@ -1,4 +1,6 @@
 supabase
 streamlit
+Flask
+flask-cors
 openai==1.64.0
 python-dotenv

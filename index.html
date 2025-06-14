@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パチンコシミュレーター eva</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Interフォントを適用 */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* スライダーの見た目を調整 (任意) */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            border-radius: 4px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4A90E2;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4A90E2;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-700 to-blue-900 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full transform transition-all duration-300 hover:scale-105">
+        <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6 flex items-center justify-center">
+            <span class="mr-3 text-yellow-500">🎰</span> 未来への咆哮
+        </h1>
+
+        <p class="text-center text-gray-600 mb-8">
+            ボタンを押すと1回分のパチンコシミュレーションを実行し、結果を表示します。
+            シミュレーション結果はSupabaseデータベースに記録されます。
+        </p>
+
+        <div class="mb-8 p-4 bg-gray-50 rounded-lg">
+            <label for="revolutions" class="block text-lg font-semibold text-gray-700 mb-2">
+                1000円あたりの回転数: <span id="revolutionsValue" class="text-blue-600 font-bold">18</span>回
+            </label>
+            <input type="range" id="revolutions" min="10" max="30" value="18" step="1"
+                   class="w-full h-2 rounded-lg appearance-none cursor-pointer accent-blue-600 bg-gray-200">
+        </div>
+
+        <button id="simulateButton"
+                class="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 transform hover:scale-105">
+            シミュレーションを実行！
+        </button>
+
+        <div id="loadingIndicator" class="hidden text-center mt-6 text-blue-600 font-semibold">
+            <svg class="animate-spin h-6 w-6 mr-3 inline-block" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            シミュレーション実行中...
+        </div>
+
+        <div id="resultContainer" class="mt-8 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500 shadow-md hidden">
+            <h2 class="text-2xl font-bold text-blue-800 mb-4">--- シミュレーション結果 ---</h2>
+            <p class="text-gray-700 mb-2"><strong>初当たりまでの回転数</strong>: <span id="hitNum" class="font-semibold text-indigo-700"></span>回</p>
+            <p class="text-gray-700 mb-2"><strong>初期投資額</strong>: <span id="initialInvestment" class="font-semibold text-indigo-700"></span>円</p>
+            <p class="text-gray-700 mb-2"><strong>結果タイプ</strong>: <span id="resultType" class="font-semibold text-indigo-700"></span></p>
+            <p class="text-gray-700 mb-4"><strong>最終収支</strong>: <span id="totalScore" class="text-lg font-bold text-green-700"></span>円</p>
+
+            <div id="rushInfoContainer" class="hidden pl-4 border-l-2 border-gray-300">
+                <p class="text-gray-600 mb-1">- <strong>ラッシュ回数</strong>: <span id="rushCount" class="font-semibold text-purple-700"></span>回</p>
+                <p class="text-gray-600">- ラッシュ中獲得点数/玉数: <span id="rawRushScore" class="font-semibold text-purple-700"></span></p>
+            </div>
+            
+            <p class="text-blue-500 mt-4 text-sm">別のシミュレーションを実行するには、再度ボタンを押してください。</p>
+        </div>
+
+        <div id="errorContainer" class="mt-8 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-lg hidden">
+            <p><strong>エラーが発生しました:</strong> <span id="errorMessage"></span></p>
+            <p class="text-red-600 text-sm mt-2">バックエンドサーバーが実行されているか確認してください。</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM要素の取得
+        const revolutionsSlider = document.getElementById('revolutions');
+        const revolutionsValueSpan = document.getElementById('revolutionsValue');
+        const simulateButton = document.getElementById('simulateButton');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const resultContainer = document.getElementById('resultContainer');
+        const hitNumSpan = document.getElementById('hitNum');
+        const initialInvestmentSpan = document.getElementById('initialInvestment');
+        const resultTypeSpan = document.getElementById('resultType');
+        const totalScoreSpan = document.getElementById('totalScore');
+        const rushInfoContainer = document.getElementById('rushInfoContainer');
+        const rushCountSpan = document.getElementById('rushCount');
+        const rawRushScoreSpan = document.getElementById('rawRushScore');
+        const errorContainer = document.getElementById('errorContainer');
+        const errorMessageSpan = document.getElementById('errorMessage');
+
+        // スライダーの値が変更されたときに表示を更新
+        revolutionsSlider.addEventListener('input', () => {
+            revolutionsValueSpan.textContent = revolutionsSlider.value;
+        });
+
+        // シミュレーションボタンのクリックイベントリスナー
+        simulateButton.addEventListener('click', async () => {
+            // UIをリセット
+            resultContainer.classList.add('hidden');
+            errorContainer.classList.add('hidden');
+            loadingIndicator.classList.remove('hidden'); // ローディング表示
+
+            const revolutionsPer1000Yen = parseInt(revolutionsSlider.value);
+
+            try {
+                // FlaskバックエンドへのAPIリクエスト
+                const response = await fetch('http://127.0.0.1:5000/simulate', { // FlaskサーバーのURLとポート
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ revolutions_per_1000yen: revolutionsPer1000Yen }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // 結果を表示
+                    hitNumSpan.textContent = data.hit_num;
+                    initialInvestmentSpan.textContent = data.initial_investment;
+                    resultTypeSpan.textContent = data.result_type;
+                    totalScoreSpan.textContent = data.total_score;
+
+                    if (data.result_type === "ラッシュ" || data.result_type === "引き戻し") {
+                        rushInfoContainer.classList.remove('hidden');
+                        rushCountSpan.textContent = data.rush_info.rush_count;
+                        rawRushScoreSpan.textContent = data.rush_info.raw_rush_score;
+                    } else {
+                        rushInfoContainer.classList.add('hidden');
+                    }
+
+                    resultContainer.classList.remove('hidden');
+                } else {
+                    errorMessageSpan.textContent = data.error || "不明なエラーが発生しました。";
+                    errorContainer.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+                errorMessageSpan.textContent = `ネットワークエラーまたはサーバーエラー: ${error.message}`;
+                errorContainer.classList.remove('hidden');
+            } finally {
+                loadingIndicator.classList.add('hidden'); // ローディングを非表示
+            }
+        });
+    </script>
+</body>
+</html>
