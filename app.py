@@ -130,8 +130,8 @@ def simulate():
             total_scoles = (rush_raw_score * 4) + 1800 - hit_inves
             result_type = "ラッシュ"
             rush_info = {
-                "rush_count": special_rush_num,
-                "raw_rush_score": rush_raw_score
+                "rush_count": special_rush_num +1,
+                "raw_rush_score": rush_raw_score +450
             }
 
         # Supabase へのデータ挿入
