@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎰 殲滅せよ、未来へ咆哮 - パチンコシミュレーター</title>
+    <title>🎰 未来へ咆哮 - パチンコシミュレーター</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for game-like typography -->
@@ -275,6 +275,7 @@
                 console.error("AudioContext could not be started:", audioError);
                 errorMessageSpan.textContent = `オーディオエラー: ${audioError.message}. 音声なしで続行します。`;
                 errorContainer.classList.remove('hidden');
+                // playErrorSound(); // オーディオエラー時にエラー音を鳴らすかどうかは選択肢
             }
 
             playClickSound(); // ボタンクリック音
@@ -300,15 +301,32 @@
                 });
                 console.log("Fetch response received."); // ★追加: fetch応答後にログを出力
 
+                // ここでレスポンスのステータスとテキストをログに出力
+                console.log("Response status:", response.status); // ★追加
+                const responseText = await response.text(); // ★追加: response.json()の前にテキストとして読み込む
+                console.log("Response text:", responseText); // ★追加
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                // response.json()はresponseTextを読み込んだ後には再利用できないため、
+                // responseTextからJSONをパースするか、response.clone()を使う必要があります。
+                // ここではシンプルにresponseTextをパースします。
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (jsonParseError) {
+                    throw new Error(`JSON parsing error: ${jsonParseError.message}. Response: ${responseText}`);
                 }
 
-                const data = await response.json();
+                console.log("Parsed data object:", data); // ★追加: パースされたデータオブジェクト全体をログ出力
+                console.log("Data success property:", data.success); // ★追加: data.successの値をログ出力
 
-                if (data.success) {
+
+                if (!response.ok) { // HTTPステータスが2xx以外の場合
+                    // errorDataはすでにresponseTextからパースしたdataを使う
+                    throw new Error(data.error || `HTTP error! status: ${response.status}. Message: ${data.message || 'No specific error message.'}`);
+                }
+
+                if (data.success) { // データ内の'success'フラグがtrueの場合
+                    console.log("Simulation successful. Updating UI."); // ★追加
                     // 数値アニメーションの速度と順番を調整
                     await animateNumber(hitNumSpan, 0, data.hit_num, 700); // 少し長め
                     await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
@@ -329,19 +347,21 @@
                     }
 
                     resultContainer.classList.remove('hidden');
-                } else {
-                    errorMessageSpan.textContent = data.error || "不明なエラーが発生しました。";
+                } else { // データ内の'success'フラグがfalseの場合
+                    console.log("Simulation failed according to data.success flag."); // ★追加
+                    errorMessageSpan.textContent = data.error || data.message || "不明なエラーが発生しました。";
                     errorContainer.classList.remove('hidden');
                     playErrorSound(); // エラー音
                 }
 
             } catch (error) {
-                console.error("Fetch error:", error);
-                errorMessageSpan.textContent = `ネットワークエラーまたはサーバーエラー: ${error.message}`;
+                console.error("Caught error during simulation:", error); // ★修正: エラーメッセージをより詳細に
+                errorMessageSpan.textContent = `エラー: ${error.message}`;
                 errorContainer.classList.remove('hidden');
                 playErrorSound(); // エラー音
             } finally {
                 loadingIndicator.classList.add('hidden'); // ローディングを非表示
+                console.log("Simulation process finished."); // ★追加
             }
         });
 
@@ -364,7 +384,7 @@
         }
 
         // 初期ロード時にTone.jsのコンテキストをアクティブにするためのダミーインタラクション
-        // document.body.addEventListener('click', () => { // ★このブロックは削除するか、コメントアウトしてください
+        // document.body.addEventListener('click', () => { 
         //     if (Tone.context.state !== 'running') {
         //         Tone.context.resume();
         //     }
@@ -372,3 +392,5 @@
     </script>
 </body>
 </html>
+
+
