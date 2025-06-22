@@ -330,26 +330,27 @@
                 if (data.success) { // データ内の'success'フラグがtrueの場合
                     console.log("Simulation successful. Updating UI.");
                     
-                    // --- アニメーションを再度有効化 ---
-                    await animateNumber(hitNumSpan, 0, data.hit_num, 700);
-                    console.log("hitNumSpan animation complete."); 
+                    // --- アニメーションをスキップするテスト ---
+                    // animateNumber関数の呼び出しをコメントアウトし、textContentに直接設定
+                    hitNumSpan.textContent = data.hit_num;
+                    console.log("hitNumSpan updated directly."); 
                     
-                    await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
-                    console.log("initialInvestmentSpan animation complete.");
+                    initialInvestmentSpan.textContent = data.initial_investment;
+                    console.log("initialInvestmentSpan updated directly.");
                     
                     resultTypeSpan.textContent = data.result_type;
                     console.log("resultTypeSpan updated."); 
                     
-                    await animateNumber(totalScoreSpan, 0, data.total_score, 1000);
-                    console.log("totalScoreSpan animation complete."); 
+                    totalScoreSpan.textContent = data.total_score;
+                    console.log("totalScoreSpan updated directly."); 
 
                     if (data.result_type === "ラッシュ" || data.result_type === "引き戻し") {
                         rushInfoContainer.style.display = 'block'; 
                         console.log("rushInfoContainer set to block."); 
-                        await animateNumber(rushCountSpan, 0, data.rush_info.rush_count, 600);
-                        console.log("rushCountSpan animation complete."); 
-                        await animateNumber(rawRushScoreSpan, 0, data.rush_info.raw_rush_score, 600);
-                        console.log("rawRushScoreSpan animation complete."); 
+                        rushCountSpan.textContent = data.rush_info.rush_count;
+                        console.log("rushCountSpan updated directly."); 
+                        rawRushScoreSpan.textContent = data.rush_info.raw_rush_score;
+                        console.log("rawRushScoreSpan updated directly."); 
                         playSuccessSound();
                     } else {
                         rushInfoContainer.style.display = 'none'; 
