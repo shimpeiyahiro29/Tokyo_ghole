@@ -230,8 +230,9 @@
             startSynth.triggerAttackRelease("G1", "2n", "+0.1"); // 少しずらして重ねる
         }
         function playSuccessSound() {
-            successSynth.triggerAttackAttackRelease(["C5", "E5", "G5"], "4n");
-            successSynth.triggerAttackAttackRelease(["C6", "E6", "G6"], "4n", "+0.2");
+            // ★修正: triggerAttackAttackRelease を triggerAttackRelease に変更
+            successSynth.triggerAttackRelease(["C5", "E5", "G5"], "4n");
+            successSynth.triggerAttackRelease(["C6", "E6", "G6"], "4n", "+0.2");
         }
         function playFailSound() {
             failSynth.triggerAttackRelease("F2", "8n");
@@ -329,31 +330,26 @@
                 if (data.success) { // データ内の'success'フラグがtrueの場合
                     console.log("Simulation successful. Updating UI.");
                     
-                    // --- ここからアニメーションをスキップするテスト ---
-                    // await animateNumber(hitNumSpan, 0, data.hit_num, 700);
-                    hitNumSpan.textContent = data.hit_num;
-                    console.log("hitNumSpan updated directly."); 
+                    // --- アニメーションを再度有効化 ---
+                    await animateNumber(hitNumSpan, 0, data.hit_num, 700);
+                    console.log("hitNumSpan animation complete."); 
                     
-                    // await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
-                    initialInvestmentSpan.textContent = data.initial_investment;
-                    console.log("initialInvestmentSpan updated directly.");
+                    await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
+                    console.log("initialInvestmentSpan animation complete.");
                     
                     resultTypeSpan.textContent = data.result_type;
                     console.log("resultTypeSpan updated."); 
                     
-                    // await animateNumber(totalScoreSpan, 0, data.total_score, 1000);
-                    totalScoreSpan.textContent = data.total_score;
-                    console.log("totalScoreSpan updated directly."); 
+                    await animateNumber(totalScoreSpan, 0, data.total_score, 1000);
+                    console.log("totalScoreSpan animation complete."); 
 
                     if (data.result_type === "ラッシュ" || data.result_type === "引き戻し") {
                         rushInfoContainer.style.display = 'block'; 
                         console.log("rushInfoContainer set to block."); 
-                        // await animateNumber(rushCountSpan, 0, data.rush_info.rush_count, 600);
-                        rushCountSpan.textContent = data.rush_info.rush_count;
-                        console.log("rushCountSpan updated directly."); 
-                        // await animateNumber(rawRushScoreSpan, 0, data.rush_info.raw_rush_score, 600);
-                        rawRushScoreSpan.textContent = data.rush_info.raw_rush_score;
-                        console.log("rawRushScoreSpan updated directly."); 
+                        await animateNumber(rushCountSpan, 0, data.rush_info.rush_count, 600);
+                        console.log("rushCountSpan animation complete."); 
+                        await animateNumber(rawRushScoreSpan, 0, data.rush_info.raw_rush_score, 600);
+                        console.log("rawRushScoreSpan animation complete."); 
                         playSuccessSound();
                     } else {
                         rushInfoContainer.style.display = 'none'; 
@@ -386,7 +382,7 @@
             }
         });
 
-        // 数値アニメーション関数 (デジタルカウントアップ風) - この関数は引き続き存在しますが、今回は使われません
+        // 数値アニメーション関数 (デジタルカウントアップ風)
         async function animateNumber(element, start, end, duration) {
             let startTime = null;
             const step = (currentTime) => {
