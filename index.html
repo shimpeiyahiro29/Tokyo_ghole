@@ -328,28 +328,36 @@
 
                 if (data.success) { // データ内の'success'フラグがtrueの場合
                     console.log("Simulation successful. Updating UI.");
-                    await animateNumber(hitNumSpan, 0, data.hit_num, 700);
-                    console.log("hitNumSpan animation complete."); // ★追加ログ
-                    await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
-                    console.log("initialInvestmentSpan animation complete."); // ★追加ログ
+                    
+                    // --- ここからアニメーションをスキップするテスト ---
+                    // await animateNumber(hitNumSpan, 0, data.hit_num, 700);
+                    hitNumSpan.textContent = data.hit_num;
+                    console.log("hitNumSpan updated directly."); 
+                    
+                    // await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
+                    initialInvestmentSpan.textContent = data.initial_investment;
+                    console.log("initialInvestmentSpan updated directly.");
                     
                     resultTypeSpan.textContent = data.result_type;
-                    console.log("resultTypeSpan updated."); // ★追加ログ
+                    console.log("resultTypeSpan updated."); 
                     
-                    await animateNumber(totalScoreSpan, 0, data.total_score, 1000);
-                    console.log("totalScoreSpan animation complete."); // ★追加ログ
+                    // await animateNumber(totalScoreSpan, 0, data.total_score, 1000);
+                    totalScoreSpan.textContent = data.total_score;
+                    console.log("totalScoreSpan updated directly."); 
 
                     if (data.result_type === "ラッシュ" || data.result_type === "引き戻し") {
-                        rushInfoContainer.style.display = 'block'; // hiddenクラスから直接style.displayに変更
-                        console.log("rushInfoContainer set to block."); // ★追加ログ
-                        await animateNumber(rushCountSpan, 0, data.rush_info.rush_count, 600);
-                        console.log("rushCountSpan animation complete."); // ★追加ログ
-                        await animateNumber(rawRushScoreSpan, 0, data.rush_info.raw_rush_score, 600);
-                        console.log("rawRushScoreSpan animation complete."); // ★追加ログ
+                        rushInfoContainer.style.display = 'block'; 
+                        console.log("rushInfoContainer set to block."); 
+                        // await animateNumber(rushCountSpan, 0, data.rush_info.rush_count, 600);
+                        rushCountSpan.textContent = data.rush_info.rush_count;
+                        console.log("rushCountSpan updated directly."); 
+                        // await animateNumber(rawRushScoreSpan, 0, data.rush_info.raw_rush_score, 600);
+                        rawRushScoreSpan.textContent = data.rush_info.raw_rush_score;
+                        console.log("rawRushScoreSpan updated directly."); 
                         playSuccessSound();
                     } else {
-                        rushInfoContainer.style.display = 'none'; // hiddenクラスから直接style.displayに変更
-                        console.log("rushInfoContainer set to none."); // ★追加ログ
+                        rushInfoContainer.style.display = 'none'; 
+                        console.log("rushInfoContainer set to none."); 
                         playFailSound();
                     }
 
@@ -357,7 +365,7 @@
                     console.log("resultContainer visibility (should be grid):", resultContainer.style.display);
                     
                     // Final check after all animations and display changes
-                    console.log("UI update sequence completed. Final resultContainer display:", resultContainer.style.display); // ★追加
+                    console.log("UI update sequence completed. Final resultContainer display:", resultContainer.style.display); 
 
                 } else { // データ内の'success'フラグがfalseの場合
                     console.log("Simulation failed according to data.success flag.");
@@ -378,7 +386,7 @@
             }
         });
 
-        // 数値アニメーション関数 (デジタルカウントアップ風)
+        // 数値アニメーション関数 (デジタルカウントアップ風) - この関数は引き続き存在しますが、今回は使われません
         async function animateNumber(element, start, end, duration) {
             let startTime = null;
             const step = (currentTime) => {
@@ -401,5 +409,3 @@
     </script>
 </body>
 </html>
-
-
