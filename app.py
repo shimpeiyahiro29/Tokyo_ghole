@@ -3,20 +3,28 @@ import math
 from supabase import create_client, Client
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os # osモジュールをインポート
+import os
 
-# Supabase Credentials (from your original code)
-# Note: For production, it's recommended to use environment variables for keys.
+# Supabase Credentials
+# 環境変数からSupabaseのURLとキーを取得
 SUPABASE_URL: str = os.getenv("SUPABASE_URL", "https://pszefvosagdpzilocerq.supabase.co")
 SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzemVvZHZvc2FndHppbG9jZXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4ODU1NTIsImV4cCI6MjA2MDQ2MTU1Mn0.nRw_Ev8VGVf_PvnQZ5Lk10JPYg3jaJwUWkGCmNO03fA")
+
+# SupabaseのURLとキーが正しく読み込まれたかログに出力（Renderのログで確認用）
+print(f"Supabase URL: {SUPABASE_URL}")
+print(f"Supabase Key (first 5 chars): {SUPABASE_KEY[:5]}...") # キー全体は表示しない
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Initialize Flask app
 app = Flask(__name__)
-# Enable CORS for all routes, allowing your HTML frontend to make requests
-CORS(app)
+
+# CORS設定をワイルドカード '*' に変更し、すべてのオリジンからのアクセスを許可
+# これにより、CORSエラーを一時的に解消し、問題の特定を容易にします。
+# 本番環境では、origins="https://shimpeiyahiro29.github.io" のように
+# 特定のオリジンを指定するのがより安全です。
+CORS(app, origins="*", methods=["GET", "POST", "OPTIONS"], allow_headers=["Content-Type"])
 
 # --- パチンコシミュレーション関数群 (変更なし) ---
 def lot_norm(hatuatari: int) -> int:
@@ -135,7 +143,6 @@ def simulate():
         }
         if result_type in ["ラッシュ", "引き戻し"]:
             data_to_insert["rush_count"] = rush_info["rush_count"]
-            # data_to_insert["raw_rush_score"] = rush_info["raw_rush_score"] # 元コードでコメントアウトされていたのでここでもコメントアウト
 
         response = supabase.table("eva").insert(data_to_insert).execute()
         # print("Supabase Response:", response) # デバッグ用
