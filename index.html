@@ -329,24 +329,36 @@
                 if (data.success) { // データ内の'success'フラグがtrueの場合
                     console.log("Simulation successful. Updating UI.");
                     await animateNumber(hitNumSpan, 0, data.hit_num, 700);
+                    console.log("hitNumSpan animation complete."); // ★追加ログ
                     await animateNumber(initialInvestmentSpan, 0, data.initial_investment, 700);
+                    console.log("initialInvestmentSpan animation complete."); // ★追加ログ
                     
                     resultTypeSpan.textContent = data.result_type;
+                    console.log("resultTypeSpan updated."); // ★追加ログ
                     
                     await animateNumber(totalScoreSpan, 0, data.total_score, 1000);
+                    console.log("totalScoreSpan animation complete."); // ★追加ログ
 
                     if (data.result_type === "ラッシュ" || data.result_type === "引き戻し") {
-                        rushInfoContainer.classList.remove('hidden'); // hiddenクラスはそのまま
+                        rushInfoContainer.style.display = 'block'; // hiddenクラスから直接style.displayに変更
+                        console.log("rushInfoContainer set to block."); // ★追加ログ
                         await animateNumber(rushCountSpan, 0, data.rush_info.rush_count, 600);
+                        console.log("rushCountSpan animation complete."); // ★追加ログ
                         await animateNumber(rawRushScoreSpan, 0, data.rush_info.raw_rush_score, 600);
+                        console.log("rawRushScoreSpan animation complete."); // ★追加ログ
                         playSuccessSound();
                     } else {
-                        rushInfoContainer.classList.add('hidden'); // hiddenクラスはそのまま
+                        rushInfoContainer.style.display = 'none'; // hiddenクラスから直接style.displayに変更
+                        console.log("rushInfoContainer set to none."); // ★追加ログ
                         playFailSound();
                     }
 
                     resultContainer.style.display = 'grid'; // 結果コンテナを表示 (grid レイアウトなので grid に)
                     console.log("resultContainer visibility (should be grid):", resultContainer.style.display);
+                    
+                    // Final check after all animations and display changes
+                    console.log("UI update sequence completed. Final resultContainer display:", resultContainer.style.display); // ★追加
+
                 } else { // データ内の'success'フラグがfalseの場合
                     console.log("Simulation failed according to data.success flag.");
                     errorMessageSpan.textContent = data.error || data.message || "不明なエラーが発生しました。";
@@ -389,3 +401,5 @@
     </script>
 </body>
 </html>
+
+
