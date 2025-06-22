@@ -115,11 +115,11 @@ def simulate():
             if chance_num < 100:
                 # 引き戻し (RUSH突入)
                 rush_hit_count, special_rush_num, rush_raw_score = lot_special(99, 163)
-                total_scoles = (rush_raw_score * 4) + 7800 - hit_inves - chance_inves
+                total_scoles = (rush_raw_score * 4) + 1800 - hit_inves - chance_inves
                 result_type = "引き戻し"
                 rush_info = {
-                    "rush_count": special_rush_num,
-                    "raw_rush_score": rush_raw_score
+                    "rush_count": special_rush_num+1,
+                    "raw_rush_score": rush_raw_score+450
                 }
             else:
                 # 単発
